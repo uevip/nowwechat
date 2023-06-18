@@ -111,8 +111,10 @@ class ChatChannel(Channel):
                     content = re.sub(pattern, r"", content)
 
                 if not flag:
-                    if context["origin_ctype"] == ContextType.VOICE:
-                        logger.info("[WX]receive group voice, but checkprefix didn't match")
+                    if context["origin_ctype"] == ContextType.VOICE:# 如果消息类型为语音，则将其发送到群里
+                    group_name = context["msg"]["group"]["name"]
+                    self.send_group_msg(group_name, context)
+                    logger.info(f"[WX]receive group voice, and send it to group {group_name}")
                     return None
             else:  # 单聊
                 match_prefix = check_prefix(content, conf().get("single_chat_prefix", [""]))
